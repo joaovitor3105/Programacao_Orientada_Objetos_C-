@@ -16,9 +16,17 @@ ListaClientes::ListaClientes(Pessoa pessoa)
     cauda = cabeca;
 }
 
-ListaClientes::~ListaClientes() // destrutor
+ListaClientes::~ListaClientes() // destrutor corrigido
 {
-    delete cabeca;
+    NoCliente *atual = cabeca;
+    while (atual != NULL)
+    {
+        NoCliente *proximo = atual->obterProx();
+        delete atual;
+        atual = proximo;
+    }
+    cabeca = NULL;
+    cauda = NULL;
 }
 
 // mostra todos os elementos da lista

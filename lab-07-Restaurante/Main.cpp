@@ -58,15 +58,10 @@ int main()
 
             getline(cin, descricaoPedido);
             cout << "Digite o tempo estimado para o pedido: ";
-            try
-            {
-                cin >> tempoEstimado;
-            }
-            catch (const std::exception &e)
-            {
-                cout << "Tempo estimado inválido!" << endl;
-            }
+
+            cin >> tempoEstimado;
             cin.ignore();
+
             cout << "Clientes Cadastrados: " << endl;
             lc.mostrarTodos();
             cout << "Digite o CPF do cliente: ";
@@ -93,16 +88,22 @@ int main()
             cout << "Pedido preparado: " << pedido.getDetalhes() << endl;
             break;
         case 4:
-
-            fp.mostrarTodos(lc);
+            if (!fp.vazia())
+            {
+                fp.mostrarTodos(lc);
+            }
             break;
         case 5:
-
-            hp.mostrarTodos(lc);
+            if (!hp.vazia())
+            {
+                hp.mostrarTodos(lc);
+            }
             break;
         case 6:
-
-            lc.mostrarTodos();
+            if (!lc.vazia())
+            {
+                lc.mostrarTodos();
+            }
             break;
 
         case 7:

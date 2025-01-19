@@ -18,7 +18,15 @@ HistoricoPedidos::HistoricoPedidos(Pedido pedido)
 
 HistoricoPedidos::~HistoricoPedidos() // destrutor
 {
-    delete cabeca;
+    NoPedido *atual = cabeca;
+    while (atual != NULL)
+    {
+        NoPedido *proximo = atual->obterProx();
+        delete atual;
+        atual = proximo;
+    }
+    cabeca = NULL;
+    cauda = NULL;
 }
 
 // mostra todos os elementos da lista

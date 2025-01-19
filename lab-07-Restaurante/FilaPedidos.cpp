@@ -16,9 +16,17 @@ FilaPedidos::FilaPedidos(Pedido pedido)
     tras = frente;
 }
 
-FilaPedidos::~FilaPedidos() // destrutor
+FilaPedidos::~FilaPedidos() // destrutor corrigido
 {
-    delete frente;
+    NoPedido *atual = frente;
+    while (atual != NULL)
+    {
+        NoPedido *proximo = atual->obterProx();
+        delete atual;
+        atual = proximo;
+    }
+    frente = NULL;
+    tras = NULL;
 }
 
 // mostra todos os elementos da fila
