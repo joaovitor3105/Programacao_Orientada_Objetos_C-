@@ -1,7 +1,7 @@
 #pragma once
 #include "Modulo.hpp"
 
-class ModuloObstaculo : Modulo
+class ModuloObstaculo : public Modulo
 {
 
 public:

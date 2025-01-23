@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Modulo.hpp"
 
-class ModuloComFogo : Modulo
+class ModuloComFogo : public Modulo
 {
 
 public:

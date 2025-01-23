@@ -1,4 +1,5 @@
 #include "RoboDeResgate.hpp"
+#include "ModuloNormal.hpp"
 
 RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial estacao)
 {
@@ -60,5 +61,21 @@ void RoboDeResgate ::resgatarAstronauta(int x, int y)
     if (estacao.getMatriz()[x][y].getTipo() == 'A')
 
     {
+        for (int i = 0; i < estacao.getAstronautas().size(); i++)
+        {
+            if (estacao.getAstronautas()[i].getX() == x && estacao.getAstronautas()[i].getY() == y)
+            {
+                resgatados.push_back(estacao.getAstronautas()[i]);
+                estacao.getAstronautas().erase(estacao.getAstronautas().begin() + i);
+                estacao.getMatriz()[x][y] = ModuloNormal('N');
+            }
+        }
     }
+}
+
+void RoboDeResgate ::gerarRelatorio()
+{
+    cout << "Astronautas resgatados: " << resgatados.size() << endl;
+    cout << "Astronautas nao resgatados: " << estacao.getAstronautas().size() << endl;
+    cout << "Passos dados: " << passos << endl;
 }

@@ -1,7 +1,7 @@
 #include "Modulo.hpp"
 #pragma once
 
-class ModuloVazio : Modulo
+class ModuloVazio : public Modulo
 {
 public:
     ModuloVazio(char tipo);
