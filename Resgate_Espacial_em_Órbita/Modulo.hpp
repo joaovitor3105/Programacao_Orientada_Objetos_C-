@@ -9,8 +9,8 @@ private:
     char tipo;
 
 public:
-    Modulo::Modulo();
-    Modulo::Modulo(char tipo);
+    Modulo();
+    Modulo(char tipo);
     char getTipo();
     virtual bool podeAcessar();
 };

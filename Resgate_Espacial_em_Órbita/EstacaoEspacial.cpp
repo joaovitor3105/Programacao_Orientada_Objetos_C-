@@ -16,9 +16,9 @@ EstacaoEspacial::EstacaoEspacial(int linhas, int colunas)
     this->linhas = linhas;
     this->colunas = colunas;
     this->matriz = new Modulo *[linhas];
-    for (int i = 0; i < linhas; ++i)
+    for (int i = 0; i < linhas; i++)
     {
-        this->matriz[i] = new Modulo[colunas];
+        matriz[i] = new Modulo[colunas];
     }
 }
 
@@ -28,15 +28,15 @@ void EstacaoEspacial::adicionarModulo(int x, int y, char tipo)
     {
         cout << "Modulo fora dos limites da estacao espacial" << endl;
     }
-    else if (tipo == 'N')
+    else if (tipo == '.')
     {
         this->matriz[x][y] = ModuloNormal(tipo);
     }
-    else if (tipo == 'O')
+    else if (tipo == '#')
     {
         this->matriz[x][y] = ModuloObstaculo(tipo);
     }
-    else if (tipo == 'V')
+    else if (tipo == '~')
     {
         this->matriz[x][y] = ModuloVazio(tipo);
     }
@@ -85,4 +85,9 @@ EstacaoEspacial::~EstacaoEspacial()
         delete[] this->matriz[i];
     }
     delete[] this->matriz;
+}
+
+Modulo EstacaoEspacial::getModulo(int x, int y)
+{
+    return this->matriz[x][y];
 }

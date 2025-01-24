@@ -3,6 +3,13 @@
 #include <string>
 using namespace std;
 
+Astronauta::Astronauta(string nome, int nivelSaude, bool atendimentoUrgente)
+{
+    this->nome = nome;
+    this->nivelSaude = nivelSaude;
+    this->atendimentoUrgente = atendimentoUrgente;
+}
+
 Astronauta::Astronauta(string nome, int nivelSaude, bool atendimentoUrgente, int x, int y)
 {
     this->nome = nome;
@@ -12,26 +19,26 @@ Astronauta::Astronauta(string nome, int nivelSaude, bool atendimentoUrgente, int
     this->y = y;
 }
 
-string Astronauta::getNome()
+string Astronauta::getNome() const
 {
     return nome;
 }
-int Astronauta::getNivelSaude()
+int Astronauta::getNivelSaude() const
 {
     return nivelSaude;
 }
 
-bool Astronauta::getAtendimentoUrgente()
+bool Astronauta::getAtendimentoUrgente() const
 {
     return atendimentoUrgente;
 }
 
-int Astronauta::getX()
+int Astronauta::getX() const
 {
     return x;
 }
 
-int Astronauta::getY()
+int Astronauta::getY() const
 {
     return y;
 }

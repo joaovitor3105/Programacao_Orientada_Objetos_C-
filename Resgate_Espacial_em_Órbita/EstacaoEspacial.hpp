@@ -12,6 +12,7 @@ private:
     int colunas;
 
 public:
+    ~EstacaoEspacial();
     EstacaoEspacial();
     EstacaoEspacial(int linhas, int colunas);
     void adicionarModulo(int x, int y, char tipo);
@@ -20,4 +21,5 @@ public:
     vector<Astronauta> getAstronautas();
     int getColunas();
     int getLinhas();
+    Modulo getModulo(int x, int y);
 };

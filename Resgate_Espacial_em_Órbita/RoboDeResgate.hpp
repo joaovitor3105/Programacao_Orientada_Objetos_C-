@@ -16,11 +16,11 @@ private:
     int **distancias;
 
 public:
-    RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial estacao);
+    RoboDeResgate();
+    RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao);
     void iniciarResgate();
     void calcularDistancias(int x, int y);
     bool proximoAoFogo(int x, int y);
     void resgatarAstronauta(int x, int y);
-    void gerarRelatorio();
     void gerarRelatorio();
 };

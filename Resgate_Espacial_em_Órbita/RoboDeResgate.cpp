@@ -1,7 +1,10 @@
 #include "RoboDeResgate.hpp"
 #include "ModuloNormal.hpp"
+RoboDeResgate ::RoboDeResgate()
+{
+}
 
-RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial estacao)
+RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao)
 {
 
     this->posicaoInicialX = posicaoInicialX;

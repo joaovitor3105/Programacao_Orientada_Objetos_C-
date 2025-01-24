@@ -12,12 +12,13 @@ private:
     int y;
 
 public:
+    Astronauta(string nome, int nivelSaude, bool atendimentoUrgente);
     Astronauta(string nome, int nivelSaude, bool atendimentoUrgente, int x, int y);
-    string getNome();
-    int getNivelSaude();
-    bool getAtendimentoUrgente();
-    int getX();
-    int getY();
+    string getNome() const;
+    int getNivelSaude() const;
+    bool getAtendimentoUrgente() const;
+    int getX() const;
+    int getY() const;
     void setNome(string nome);
     void setNivelSaude(int nivelSaude);
     void setAtendimentoUrgente(bool atendimentoUrgente);
