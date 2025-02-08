@@ -16,6 +16,10 @@ char Modulo::getTipo()
 
 bool Modulo::podeAcessar()
 {
-    return 0;
+    if (tipo == '.' || tipo == 'A' || tipo == 'S')
+    {
+        return true;
+    }
+    return false;
 }
 Modulo::~Modulo() {}

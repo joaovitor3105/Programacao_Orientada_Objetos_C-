@@ -7,15 +7,11 @@
 #include "ModuloComFogo.hpp"
 #include "ModuloComAstronauta.hpp"
 
-EstacaoEspacial::EstacaoEspacial()
-{
-}
-
 EstacaoEspacial::EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz)
 {
     this->linhas = linhas;
     this->colunas = colunas;
-    this->matriz = vector<vector<Modulo>>(linhas, vector<Modulo>(colunas));
+    this->matriz = std::vector<std::vector<Modulo>>(linhas, std::vector<Modulo>(colunas));
     for (int i = 0; i < linhas; i++)
     {
         for (int j = 0; j < colunas; j++)

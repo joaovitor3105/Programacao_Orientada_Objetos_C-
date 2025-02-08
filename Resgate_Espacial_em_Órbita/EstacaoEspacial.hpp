@@ -14,14 +14,14 @@
 class EstacaoEspacial
 {
 private:
-    vector<vector<Modulo>> matriz;
-    vector<Astronauta> astronautas;
+    std::vector<std::vector<Modulo>> matriz;
+    std::vector<Astronauta> astronautas;
     int linhas;
     int colunas;
 
 public:
     ~EstacaoEspacial();
-    EstacaoEspacial();
+    EstacaoEspacial() = default;
     EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz);
     void adicionarModulo(int x, int y, char tipo);
     void adicionarAstronauta(Astronauta astronauta);
