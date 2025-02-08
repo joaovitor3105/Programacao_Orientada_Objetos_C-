@@ -8,12 +8,8 @@ RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoE
     this->passos = 0;
     resgatados = std::vector<Astronauta>();
     naoResgatados = estacao.getAstronautas();
-
     visitados = std::vector<std::vector<bool>>(estacao.getLinhas(), std::vector<bool>(estacao.getColunas(), false));
     distancia = std::vector<std::vector<int>>(estacao.getLinhas(), std::vector<int>(estacao.getColunas(), -1));
-    cout << "Linhas: " << estacao.getLinhas() << ", Colunas: " << estacao.getColunas() << endl;
-    cout << "Número de astronautas: " << estacao.getAstronautas().size() << endl;
-    cout << "RoboDeResgate criado com sucesso!" << endl;
 }
 
 void RoboDeResgate ::iniciarResgate()
@@ -30,7 +26,10 @@ void RoboDeResgate ::iniciarResgate()
         int astronautaX = -1;
         int astronautaY = -1;
 
-        for (const Astronauta &astronauta : estacao.getAstronautas())
+        // Copiar a lista de astronautas para evitar problemas ao modificar o vetor original
+        vector<Astronauta> astros = estacao.getAstronautas();
+
+        for (const Astronauta &astronauta : astros)
         {
             int ax = astronauta.getX();
             int ay = astronauta.getY();
@@ -43,14 +42,15 @@ void RoboDeResgate ::iniciarResgate()
             }
         }
 
-        // Se não encontrou caminho para nenhum astronauta
+        // Se não encontrou caminho para nenhum astronauta, encerra o loop
         if (astronautaX == -1)
         {
-            break; // Os astronautas restantes não podem ser alcançados
+            break;
         }
 
         // Move até o astronauta e o resgata
         passos += menorDistancia;
+
         resgatarAstronauta(astronautaX, astronautaY);
 
         // Atualiza posição atual
@@ -61,23 +61,21 @@ void RoboDeResgate ::iniciarResgate()
     // Volta para o módulo de segurança
     calcularDistancias(posX, posY);
 
-    // Procura o módulo de segurança
+    // Procura o módulo de segurança e retorna assim que encontrar
     for (int i = 0; i < estacao.getLinhas(); i++)
     {
         for (int j = 0; j < estacao.getColunas(); j++)
         {
-            if (estacao.getModulo(i, j).getTipo() == 'S')
+            if (estacao.getModulo(i, j).getTipo() == 'S' && visitados[i][j])
             {
-                if (visitados[i][j])
-                {
-                    passos += distancia[i][j];
-                }
-                break;
+                passos += distancia[i][j];
+                gerarRelatorio();
+                return;
             }
         }
     }
 
-    // Gera o relatório usando a função existente
+    // Gera o relatório final
     gerarRelatorio();
 }
 
@@ -113,8 +111,12 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
             int novoY = atualY + dy[i];
 
             // Usa a nova função de validação
-            if (!visitados[novoX][novoY] && posicaoValida(novoX, novoY))
+            if (novoX >= 0 && novoX < estacao.getLinhas() &&
+                novoY >= 0 && novoY < estacao.getColunas() &&
+                posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
             {
+                cout << "Verificando posição (" << novoX << ", " << novoY << ") => "
+                     << "podeAcessar: " << estacao.getMatriz()[novoX][novoY].podeAcessar() << endl;
                 visitados[novoX][novoY] = true;
                 distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
                 fila.push({novoX, novoY});
@@ -125,22 +127,23 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
 
 bool RoboDeResgate ::proximoAoFogo(int x, int y)
 {
-    if (x + 1 < estacao.getLinhas() && estacao.getMatriz()[x + 1][y].getTipo() == 'F')
+    if (x + 1 < estacao.getLinhas() && y < estacao.getColunas() && estacao.getMatriz()[x + 1][y].getTipo() == 'F')
     {
         return true;
     }
-    if (x - 1 >= 0 && estacao.getMatriz()[x - 1][y].getTipo() == 'F')
+    if (x - 1 >= 0 && y < estacao.getColunas() && estacao.getMatriz()[x - 1][y].getTipo() == 'F')
     {
         return true;
     }
-    if (y + 1 < estacao.getColunas() && estacao.getMatriz()[x][y + 1].getTipo() == 'F')
+    if (y + 1 < estacao.getColunas() && x < estacao.getLinhas() && estacao.getMatriz()[x][y + 1].getTipo() == 'F')
     {
         return true;
     }
-    if (y - 1 >= 0 && estacao.getMatriz()[x][y - 1].getTipo() == 'F')
+    if (y - 1 >= 0 && x < estacao.getLinhas() && estacao.getMatriz()[x][y - 1].getTipo() == 'F')
     {
         return true;
     }
+
     return false;
 }
 
@@ -149,15 +152,16 @@ void RoboDeResgate ::resgatarAstronauta(int x, int y)
     if (estacao.getMatriz()[x][y].getTipo() == 'A')
 
     {
-        size_t numAstronautas = estacao.getAstronautas().size();
 
-        for (size_t i = 0; i < numAstronautas; i++)
+        for (auto it = naoResgatados.begin(); it != naoResgatados.end(); it++)
         {
-            if (estacao.getAstronautas()[i].getX() == x && estacao.getAstronautas()[i].getY() == y)
+            if (it->getX() == x && it->getY() == y)
+
             {
-                resgatados.push_back(estacao.getAstronautas()[i]);
-                estacao.getAstronautas().erase(estacao.getAstronautas().begin() + i);
+                resgatados.push_back(*it);
+                naoResgatados.erase(it);
                 estacao.getMatriz()[x][y] = ModuloNormal('.');
+                break;
             }
         }
     }
@@ -185,6 +189,10 @@ bool RoboDeResgate ::posicaoValida(int x, int y)
 
 RoboDeResgate::~RoboDeResgate()
 {
+    resgatados.clear();
+    naoResgatados.clear();
+    visitados.clear();
+    distancia.clear();
 }
 
 void RoboDeResgate ::imprimirEstacao()

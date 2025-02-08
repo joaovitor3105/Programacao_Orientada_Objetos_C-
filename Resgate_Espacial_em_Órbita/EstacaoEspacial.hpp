@@ -1,6 +1,14 @@
 #pragma once
 #include "Modulo.hpp"
 #include "Astronauta.hpp"
+#include "Astronauta.hpp"
+#include "EstacaoEspacial.hpp"
+#include "ModuloNormal.hpp"
+#include "ModuloObstaculo.hpp"
+#include "ModuloVazio.hpp"
+#include "ModuloSeguranca.hpp"
+#include "ModuloComFogo.hpp"
+#include "ModuloComAstronauta.hpp"
 #include <vector>
 
 class EstacaoEspacial

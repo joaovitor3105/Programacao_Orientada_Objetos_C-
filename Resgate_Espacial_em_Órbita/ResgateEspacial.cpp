@@ -7,17 +7,22 @@
 #include "Astronauta.hpp"
 #include "EstacaoEspacial.hpp"
 #include "RoboDeResgate.hpp"
+#include "ModuloNormal.hpp"
+#include "ModuloObstaculo.hpp"
+#include "ModuloVazio.hpp"
+#include "ModuloSeguranca.hpp"
+#include "ModuloComFogo.hpp"
+#include "ModuloComAstronauta.hpp"
 using namespace std;
 
-int main()
+EstacaoEspacial lerArquivo()
 {
-
     ifstream arquivo;
     arquivo.open("entrada1.txt");
     if (!arquivo.is_open())
     {
         cout << "Erro ao abrir o arquivo" << endl;
-        return 1;
+        return EstacaoEspacial(0, 0);
     }
     // lendo dimensoes da matriz
     int linha, coluna;
@@ -86,9 +91,25 @@ int main()
             }
         }
     }
-
     arquivo.close();
+    return estacao;
+}
+
+int main()
+{
+
+    EstacaoEspacial estacao = lerArquivo();
     estacao.imprimirEstacao();
+    // RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
+    // robo.iniciarResgate();
+    for (int i = 0; i < estacao.getLinhas(); i++)
+    {
+        for (int j = 0; j < estacao.getColunas(); j++)
+        {
+            cout << estacao.getMatriz()[i][j].podeAcessar() << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 };
