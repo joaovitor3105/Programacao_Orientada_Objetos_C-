@@ -8,19 +8,22 @@ class RoboDeResgate
 private:
     int posicaoInicialX;
     int posicaoInicialY;
-    EstacaoEspacial estacao;
+    EstacaoEspacial &estacao;
     vector<Astronauta> resgatados;
     vector<Astronauta> naoResgatados;
     int passos;
-    bool **visitado;
-    int **distancias;
+    std::vector<std::vector<bool>> visitados;
+    std::vector<std::vector<int>> distancia;
 
 public:
-    RoboDeResgate();
     RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao);
+    RoboDeResgate(EstacaoEspacial &estacao);
+    ~RoboDeResgate();
     void iniciarResgate();
     void calcularDistancias(int x, int y);
     bool proximoAoFogo(int x, int y);
     void resgatarAstronauta(int x, int y);
     void gerarRelatorio();
+    bool posicaoValida(int x, int y);
+    void imprimirEstacao();
 };

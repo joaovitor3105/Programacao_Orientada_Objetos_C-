@@ -6,7 +6,7 @@
 class EstacaoEspacial
 {
 private:
-    Modulo **matriz;
+    vector<vector<Modulo>> matriz;
     vector<Astronauta> astronautas;
     int linhas;
     int colunas;
@@ -17,9 +17,10 @@ public:
     EstacaoEspacial(int linhas, int colunas);
     void adicionarModulo(int x, int y, char tipo);
     void adicionarAstronauta(Astronauta astronauta);
-    Modulo **getMatriz();
-    vector<Astronauta> getAstronautas();
+    vector<vector<Modulo>> &getMatriz();
+    vector<Astronauta> &getAstronautas();
     int getColunas();
     int getLinhas();
     Modulo getModulo(int x, int y);
 };
+;

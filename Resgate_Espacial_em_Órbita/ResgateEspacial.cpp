@@ -9,13 +9,6 @@
 #include "RoboDeResgate.hpp"
 using namespace std;
 
-class ResgateEspacial
-{
-
-    RoboDeResgate roboderesgate;
-    EstacaoEspacial estacao;
-};
-
 int main()
 {
 
@@ -30,7 +23,7 @@ int main()
     int linha, coluna;
     arquivo >> linha;
     arquivo >> coluna;
-    EstacaoEspacial estacao = EstacaoEspacial(linha, coluna);
+    EstacaoEspacial estacao(linha, coluna);
     char tipo;
 
     // lendo matriz e definindo os modulos
@@ -77,14 +70,18 @@ int main()
         int x, y;
         char ignoreChar;
         getline(ss, nome, ':');
+
         ss >> ignoreChar >> x >> ignoreChar >> y >> ignoreChar;
+
         for (Astronauta &astronauta : estacao.getAstronautas())
 
         {
-            if (astronauta.getNome() == nome)
+            if (astronauta.getNome() == nome) // verificacao se a ordem dos astronautas esta correto
             {
+
                 astronauta.setX(x);
                 astronauta.setY(y);
+
                 break;
             }
         }
@@ -92,25 +89,6 @@ int main()
 
     arquivo.close();
 
-    cout << "Matriz:" << endl;
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            cout << estacao.getModulo(i, j).getTipo();
-        }
-        cout << endl;
-    }
-
-    // Imprimir os astronautas e suas posições
-    cout << "Astronautas:" << endl;
-    for (const Astronauta &astronauta : estacao.getAstronautas())
-    {
-        cout << "Nome: " << astronauta.getNome()
-             << ", Nivel de Saude: " << astronauta.getNivelSaude()
-             << ", Urgencia Medica: " << astronauta.getAtendimentoUrgente()
-             << ", Posicao: (" << astronauta.getX() << ", " << astronauta.getY() << ")"
-             << endl;
-    }
+    RoboDeResgate roboderesgate(0, 0, estacao);
     return 0;
 };

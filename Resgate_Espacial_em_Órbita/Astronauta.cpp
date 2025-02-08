@@ -8,6 +8,8 @@ Astronauta::Astronauta(string nome, int nivelSaude, bool atendimentoUrgente)
     this->nome = nome;
     this->nivelSaude = nivelSaude;
     this->atendimentoUrgente = atendimentoUrgente;
+    this->x = 0;
+    this->y = 0;
 }
 
 Astronauta::Astronauta(string nome, int nivelSaude, bool atendimentoUrgente, int x, int y)

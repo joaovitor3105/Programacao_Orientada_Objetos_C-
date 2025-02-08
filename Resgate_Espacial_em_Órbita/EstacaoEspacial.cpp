@@ -15,11 +15,6 @@ EstacaoEspacial::EstacaoEspacial(int linhas, int colunas)
 {
     this->linhas = linhas;
     this->colunas = colunas;
-    this->matriz = new Modulo *[linhas];
-    for (int i = 0; i < linhas; i++)
-    {
-        matriz[i] = new Modulo[colunas];
-    }
 }
 
 void EstacaoEspacial::adicionarModulo(int x, int y, char tipo)
@@ -58,14 +53,14 @@ void EstacaoEspacial::adicionarAstronauta(Astronauta astronauta)
     this->astronautas.push_back(astronauta);
 }
 
-Modulo **EstacaoEspacial::getMatriz()
+vector<vector<Modulo>> &EstacaoEspacial::getMatriz()
 {
-    return this->matriz;
+    return matriz;
 }
 
-vector<Astronauta> EstacaoEspacial::getAstronautas()
+vector<Astronauta> &EstacaoEspacial::getAstronautas()
 {
-    return this->astronautas;
+    return astronautas;
 }
 
 int EstacaoEspacial::getColunas()
@@ -80,11 +75,7 @@ int EstacaoEspacial::getLinhas()
 
 EstacaoEspacial::~EstacaoEspacial()
 {
-    for (int i = 0; i < linhas; ++i)
-    {
-        delete[] this->matriz[i];
-    }
-    delete[] this->matriz;
+    cout << "Destrutor da EstacaoEspacial chamado!" << endl;
 }
 
 Modulo EstacaoEspacial::getModulo(int x, int y)
