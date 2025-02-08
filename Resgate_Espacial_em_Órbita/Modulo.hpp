@@ -13,4 +13,5 @@ public:
     Modulo(char tipo);
     char getTipo();
     virtual bool podeAcessar();
+    virtual ~Modulo();
 };

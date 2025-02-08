@@ -22,7 +22,7 @@ private:
 public:
     ~EstacaoEspacial();
     EstacaoEspacial();
-    EstacaoEspacial(int linhas, int colunas);
+    EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz);
     void adicionarModulo(int x, int y, char tipo);
     void adicionarAstronauta(Astronauta astronauta);
     vector<vector<Modulo>> &getMatriz();

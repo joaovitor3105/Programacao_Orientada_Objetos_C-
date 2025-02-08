@@ -19,16 +19,18 @@ EstacaoEspacial lerArquivo()
 {
     ifstream arquivo;
     arquivo.open("entrada1.txt");
+
     if (!arquivo.is_open())
     {
         cout << "Erro ao abrir o arquivo" << endl;
-        return EstacaoEspacial(0, 0);
+        return EstacaoEspacial(0, 0, vector<vector<char>>());
     }
     // lendo dimensoes da matriz
     int linha, coluna;
     arquivo >> linha;
     arquivo >> coluna;
-    EstacaoEspacial estacao(linha, coluna);
+    vector<vector<char>> matriztemp = vector<vector<char>>(linha, vector<char>(coluna));
+
     char tipo;
 
     // lendo matriz e definindo os modulos
@@ -38,10 +40,11 @@ EstacaoEspacial lerArquivo()
         for (int j = 0; j < coluna; j++)
         {
             arquivo >> tipo;
-            estacao.adicionarModulo(i, j, tipo);
+            matriztemp[i][j] = tipo;
         }
     }
 
+    EstacaoEspacial estacao(linha, coluna, matriztemp);
     string linhaStr;
     arquivo.ignore();
     getline(arquivo, linhaStr);

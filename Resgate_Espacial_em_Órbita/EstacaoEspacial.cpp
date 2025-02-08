@@ -11,12 +11,24 @@ EstacaoEspacial::EstacaoEspacial()
 {
 }
 
-EstacaoEspacial::EstacaoEspacial(int linhas, int colunas)
+EstacaoEspacial::EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz)
 {
     this->linhas = linhas;
     this->colunas = colunas;
     this->matriz = vector<vector<Modulo>>(linhas, vector<Modulo>(colunas));
+    for (int i = 0; i < linhas; i++)
+    {
+        for (int j = 0; j < colunas; j++)
+        {
+            adicionarModulo(i, j, matriz[i][j]);
+        }
+    }
 }
+/*{
+    this->linhas = linhas;
+    this->colunas = colunas;
+    this->matriz = vector<vector<Modulo>>(linhas, vector<Modulo>(colunas));
+}*/
 
 void EstacaoEspacial::adicionarModulo(int x, int y, char tipo)
 {

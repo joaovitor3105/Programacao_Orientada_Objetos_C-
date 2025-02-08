@@ -16,5 +16,6 @@ char Modulo::getTipo()
 
 bool Modulo::podeAcessar()
 {
-    return true;
+    return 0;
 }
+Modulo::~Modulo() {}
