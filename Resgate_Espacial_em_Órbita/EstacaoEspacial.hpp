@@ -21,6 +21,7 @@ public:
     vector<Astronauta> &getAstronautas();
     int getColunas();
     int getLinhas();
+    void imprimirEstacao();
     Modulo getModulo(int x, int y);
 };
 ;

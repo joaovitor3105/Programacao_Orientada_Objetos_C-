@@ -6,7 +6,6 @@
 RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao) : posicaoInicialX(posicaoInicialX), posicaoInicialY(posicaoInicialY), estacao(estacao)
 {
     this->passos = 0;
-    vector<Astronauta> &astronautas = estacao.getAstronautas();
     resgatados = std::vector<Astronauta>();
     naoResgatados = estacao.getAstronautas();
 

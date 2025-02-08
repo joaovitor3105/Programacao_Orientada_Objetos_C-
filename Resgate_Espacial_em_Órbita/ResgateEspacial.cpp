@@ -88,7 +88,7 @@ int main()
     }
 
     arquivo.close();
+    estacao.imprimirEstacao();
 
-    RoboDeResgate roboderesgate(0, 0, estacao);
     return 0;
 };
