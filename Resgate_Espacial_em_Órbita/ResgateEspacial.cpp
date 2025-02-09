@@ -105,6 +105,6 @@ int main()
     estacao.imprimirEstacao();
     RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
     // robo.iniciarResgate();
-    robo.bfs(0, 0);
+    robo.iniciarResgate(0, 0);
     return 0;
 };

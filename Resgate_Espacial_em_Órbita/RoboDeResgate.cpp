@@ -14,127 +14,72 @@ RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoE
     distancia = std::vector<std::vector<int>>(estacao.getLinhas(), std::vector<int>(estacao.getColunas(), -1));
 }
 
-void RoboDeResgate ::iniciarResgate()
+void RoboDeResgate ::iniciarResgate(int x, int y)
 {
-    int posX = posicaoInicialX;
-    int posY = posicaoInicialY;
-
-    while (!estacao.getAstronautas().empty())
-    {
-        calcularDistancias(posX, posY);
-
-        // Encontra o astronauta mais próximo
-        int menorDistancia = INT_MAX;
-        int astronautaX = -1;
-        int astronautaY = -1;
-
-        // Copiar a lista de astronautas para evitar problemas ao modificar o vetor original
-        vector<Astronauta> astros = estacao.getAstronautas();
-
-        for (const Astronauta &astronauta : astros)
-        {
-            int ax = astronauta.getX();
-            int ay = astronauta.getY();
-
-            if (distancia[ax][ay] != -1 && distancia[ax][ay] < menorDistancia)
-            {
-                menorDistancia = distancia[ax][ay];
-                astronautaX = ax;
-                astronautaY = ay;
-            }
-        }
-
-        // Se não encontrou caminho para nenhum astronauta, encerra o loop
-        if (astronautaX == -1)
-        {
-            break;
-        }
-
-        // Move até o astronauta e o resgata
-        passos += menorDistancia;
-
-        resgatarAstronauta(astronautaX, astronautaY);
-
-        // Marca a posição como visitada para evitar revisitar
-        distancia[astronautaX][astronautaY] = -1;
-
-        // Atualiza posição atual
-        posX = astronautaX;
-        posY = astronautaY;
-    }
-
-    // Volta para o módulo de segurança
-    calcularDistancias(posX, posY);
-
-    // Procura o módulo de segurança e retorna assim que encontrar
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            if (estacao.getModulo(i, j).getTipo() == 'S' && visitados[i][j])
-            {
-                passos += distancia[i][j];
-                gerarRelatorio();
-                return;
-            }
-        }
-    }
-
-    // Gera o relatório final
-    gerarRelatorio();
-}
-
-void RoboDeResgate::calcularDistancias(int x, int y)
-{
-    // Inicializa as matrizes de visitação e distância
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            visitados[i][j] = false;
-            distancia[i][j] = INT_MAX; // Inicializa com um valor muito grande
-        }
-    }
-
-    // Define a distância da posição inicial como 0
-    distancia[x][y] = 0;
-
-    // Fila para BFS
     queue<pair<int, int>> fila;
     fila.push({x, y});
     visitados[x][y] = true;
 
-    // Direções: cima, baixo, esquerda, direita
+    // Inicializa distância corretamente
+    for (int i = 0; i < estacao.getLinhas(); i++)
+        for (int j = 0; j < estacao.getColunas(); j++)
+            distancia[i][j] = INT_MAX;
+
+    distancia[x][y] = 0;
+
     int dx[] = {-1, 1, 0, 0};
     int dy[] = {0, 0, -1, 1};
 
-    // BFS
     while (!fila.empty())
     {
         int atualX = fila.front().first;
         int atualY = fila.front().second;
         fila.pop();
+        passos++;
 
-        // Verifica as 4 direções
+        // Se encontrou um astronauta, resgata ele
+        if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
+        {
+            cout << "Astronauta encontrado na posição (" << atualX << ", " << atualY << ")" << endl;
+            resgatarAstronauta(atualX, atualY);
+        }
+
+        // Explora as 4 direções possíveis
         for (int i = 0; i < 4; i++)
         {
             int novoX = atualX + dx[i];
             int novoY = atualY + dy[i];
 
-            // Valida a nova posição
-            if (novoX >= 0 && novoX < estacao.getLinhas() &&
-                novoY >= 0 && novoY < estacao.getColunas() &&
-                posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
+            if (posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
             {
+                fila.push({novoX, novoY});
                 visitados[novoX][novoY] = true;
                 distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
-                fila.push({novoX, novoY});
             }
         }
     }
+
+    if (distancia[posicaoInicialX][posicaoInicialY] != INT_MAX)
+        passos += distancia[posicaoInicialX][posicaoInicialY];
+
+    cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
+    for (int i = 0; i < estacao.getLinhas(); i++)
+    {
+        for (int j = 0; j < estacao.getColunas(); j++)
+        {
+            if (distancia[i][j] == INT_MAX)
+            {
+                cout << "I ";
+            }
+            else
+                cout << distancia[i][j] << " ";
+        }
+        cout << endl;
+    }
+    gerarRelatorio();
 }
 
-void RoboDeResgate::dfs(int x, int y)
+/*void RoboDeResgate::dfs(int x, int y)
 {
     stack<pair<int, int>> pilha;
     pilha.push({x, y});
@@ -242,7 +187,7 @@ void RoboDeResgate::bfs(int x, int y)
 
     cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
     gerarRelatorio();
-}
+}*/
 
 bool RoboDeResgate ::proximoAoFogo(int x, int y)
 {

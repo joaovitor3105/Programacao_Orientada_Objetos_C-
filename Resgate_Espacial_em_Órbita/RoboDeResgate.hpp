@@ -17,15 +17,13 @@ private:
 
 public:
     RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao);
-    RoboDeResgate(EstacaoEspacial &estacao);
     ~RoboDeResgate();
-    void iniciarResgate();
-    void calcularDistancias(int x, int y);
+    void iniciarResgate(int x, int y);
     bool proximoAoFogo(int x, int y);
     void resgatarAstronauta(int x, int y);
     void gerarRelatorio();
     bool posicaoValida(int x, int y);
     void imprimirEstacao(int x, int y);
-    void dfs(int x, int y);
-    void bfs(int x, int y);
+    // void dfs(int x, int y);
+    // void bfs(int x, int y);
 };
