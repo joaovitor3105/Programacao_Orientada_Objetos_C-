@@ -18,7 +18,7 @@ using namespace std;
 EstacaoEspacial lerArquivo()
 {
     ifstream arquivo;
-    arquivo.open("entrada1.txt");
+    arquivo.open("entrada2.txt");
 
     if (!arquivo.is_open())
     {
@@ -102,9 +102,9 @@ int main()
 {
 
     EstacaoEspacial estacao = lerArquivo();
+    estacao.imprimirEstacao();
     RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
     // robo.iniciarResgate();
-    robo.dfs(0, 0);
     robo.bfs(0, 0);
     return 0;
 };

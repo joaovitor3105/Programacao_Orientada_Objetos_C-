@@ -25,7 +25,7 @@ public:
     void resgatarAstronauta(int x, int y);
     void gerarRelatorio();
     bool posicaoValida(int x, int y);
-    void imprimirEstacao();
+    void imprimirEstacao(int x, int y);
     void dfs(int x, int y);
     void bfs(int x, int y);
 };

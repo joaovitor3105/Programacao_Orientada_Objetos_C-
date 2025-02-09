@@ -3,6 +3,7 @@
 #include <queue>
 #include <iostream>
 #include <stack>
+#include <climits>
 
 RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao) : posicaoInicialX(posicaoInicialX), posicaoInicialY(posicaoInicialY), estacao(estacao)
 {
@@ -23,7 +24,7 @@ void RoboDeResgate ::iniciarResgate()
         calcularDistancias(posX, posY);
 
         // Encontra o astronauta mais próximo
-        int menorDistancia = 10000;
+        int menorDistancia = INT_MAX;
         int astronautaX = -1;
         int astronautaY = -1;
 
@@ -83,17 +84,22 @@ void RoboDeResgate ::iniciarResgate()
     gerarRelatorio();
 }
 
-void RoboDeResgate ::calcularDistancias(int x, int y)
+void RoboDeResgate::calcularDistancias(int x, int y)
 {
+    // Inicializa as matrizes de visitação e distância
     for (int i = 0; i < estacao.getLinhas(); i++)
     {
         for (int j = 0; j < estacao.getColunas(); j++)
         {
             visitados[i][j] = false;
-            distancia[i][j] = 0;
+            distancia[i][j] = INT_MAX; // Inicializa com um valor muito grande
         }
     }
 
+    // Define a distância da posição inicial como 0
+    distancia[x][y] = 0;
+
+    // Fila para BFS
     queue<pair<int, int>> fila;
     fila.push({x, y});
     visitados[x][y] = true;
@@ -102,6 +108,7 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
     int dx[] = {-1, 1, 0, 0};
     int dy[] = {0, 0, -1, 1};
 
+    // BFS
     while (!fila.empty())
     {
         int atualX = fila.front().first;
@@ -114,12 +121,11 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
             int novoX = atualX + dx[i];
             int novoY = atualY + dy[i];
 
-            // Usa a nova função de validação
+            // Valida a nova posição
             if (novoX >= 0 && novoX < estacao.getLinhas() &&
                 novoY >= 0 && novoY < estacao.getColunas() &&
                 posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
             {
-
                 visitados[novoX][novoY] = true;
                 distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
                 fila.push({novoX, novoY});
@@ -127,21 +133,23 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
         }
     }
 }
+
 void RoboDeResgate::dfs(int x, int y)
 {
     stack<pair<int, int>> pilha;
     pilha.push({x, y});
     visitados[x][y] = true;
 
-    // Direções: cima, baixo, esquerda, direita
-    int dx[] = {-1, 1, 0, 0};
-    int dy[] = {0, 0, -1, 1};
+    // Direções ajustadas: direita, baixo, esquerda, cima (priorizando um padrão)
+    int dx[] = {0, 1, 0, -1};
+    int dy[] = {1, 0, -1, 0};
 
     while (!pilha.empty())
     {
         int atualX = pilha.top().first;
         int atualY = pilha.top().second;
         pilha.pop();
+        passos++;
 
         // Verificar se encontrou um astronauta
         if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
@@ -150,6 +158,7 @@ void RoboDeResgate::dfs(int x, int y)
             resgatarAstronauta(atualX, atualY);
         }
 
+        // Explorar vizinhos
         for (int i = 0; i < 4; i++)
         {
             int novoX = atualX + dx[i];
@@ -157,12 +166,14 @@ void RoboDeResgate::dfs(int x, int y)
 
             if (posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
             {
+                imprimirEstacao(novoX, novoY);
+                cout << endl;
                 visitados[novoX][novoY] = true;
                 pilha.push({novoX, novoY});
-                passos++;
             }
         }
     }
+
     // Voltar para o módulo inicial
     calcularDistancias(x, y);
     if (distancia[posicaoInicialX][posicaoInicialY] != -1)
@@ -182,6 +193,13 @@ void RoboDeResgate::bfs(int x, int y)
     visitados[x][y] = true;
     distancia[x][y] = 0;
 
+    // Inicializa distância corretamente
+    for (int i = 0; i < estacao.getLinhas(); i++)
+        for (int j = 0; j < estacao.getColunas(); j++)
+            distancia[i][j] = -1;
+
+    distancia[x][y] = 0;
+
     int dx[] = {-1, 1, 0, 0};
     int dy[] = {0, 0, -1, 1};
 
@@ -190,13 +208,16 @@ void RoboDeResgate::bfs(int x, int y)
         int atualX = fila.front().first;
         int atualY = fila.front().second;
         fila.pop();
+        passos++;
 
-            if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
+        // Se encontrou um astronauta, resgata ele
+        if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
         {
             cout << "Astronauta encontrado na posição (" << atualX << ", " << atualY << ")" << endl;
             resgatarAstronauta(atualX, atualY);
         }
 
+        // Explora as 4 direções possíveis
         for (int i = 0; i < 4; i++)
         {
             int novoX = atualX + dx[i];
@@ -211,8 +232,14 @@ void RoboDeResgate::bfs(int x, int y)
         }
     }
 
+    // Calcula a volta ao ponto inicial
     calcularDistancias(x, y);
-    passos += distancia[posicaoInicialX][posicaoInicialY];
+
+    if (distancia[posicaoInicialX][posicaoInicialY] != -1)
+        passos += distancia[posicaoInicialX][posicaoInicialY];
+    else
+        cout << "Erro: Caminho de volta não encontrado!" << endl;
+
     cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
     gerarRelatorio();
 }
@@ -261,8 +288,17 @@ void RoboDeResgate ::resgatarAstronauta(int x, int y)
 
 void RoboDeResgate ::gerarRelatorio()
 {
-    cout << "Astronautas resgatados: " << resgatados.size() << endl;
+
+    for (const auto &astronauta : resgatados)
+    {
+        cout << "Resgatado: " << astronauta.getNome() << " na posição (" << astronauta.getX() << ", " << astronauta.getY() << ")" << endl;
+    }
+
     cout << "Astronautas nao resgatados: " << naoResgatados.size() << endl;
+    for (const auto &astronauta : naoResgatados)
+    {
+        cout << "Nao resgatado: " << astronauta.getNome() << " na posição (" << astronauta.getX() << ", " << astronauta.getY() << ")" << endl;
+    }
     cout << "Passos dados: " << passos << endl;
 }
 
@@ -287,13 +323,20 @@ RoboDeResgate::~RoboDeResgate()
     distancia.clear();
 }
 
-void RoboDeResgate ::imprimirEstacao()
+void RoboDeResgate ::imprimirEstacao(int atualX, int atualY)
 {
     for (int i = 0; i < estacao.getLinhas(); i++)
     {
         for (int j = 0; j < estacao.getColunas(); j++)
         {
-            cout << estacao.getMatriz()[i][j].getTipo() << " ";
+            if (i == atualX && j == atualY)
+            {
+                cout << "R ";
+            }
+            else
+            {
+                cout << estacao.getMatriz()[i][j].getTipo() << " ";
+            }
         }
         cout << endl;
     }
