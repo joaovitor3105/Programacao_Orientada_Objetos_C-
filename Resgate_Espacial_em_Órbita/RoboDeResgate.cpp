@@ -2,6 +2,7 @@
 #include "ModuloNormal.hpp"
 #include <queue>
 #include <iostream>
+#include <stack>
 
 RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao) : posicaoInicialX(posicaoInicialX), posicaoInicialY(posicaoInicialY), estacao(estacao)
 {
@@ -34,7 +35,7 @@ void RoboDeResgate ::iniciarResgate()
             int ax = astronauta.getX();
             int ay = astronauta.getY();
 
-            if (visitados[ax][ay] && distancia[ax][ay] < menorDistancia)
+            if (distancia[ax][ay] != -1 && distancia[ax][ay] < menorDistancia)
             {
                 menorDistancia = distancia[ax][ay];
                 astronautaX = ax;
@@ -52,6 +53,9 @@ void RoboDeResgate ::iniciarResgate()
         passos += menorDistancia;
 
         resgatarAstronauta(astronautaX, astronautaY);
+
+        // Marca a posição como visitada para evitar revisitar
+        distancia[astronautaX][astronautaY] = -1;
 
         // Atualiza posição atual
         posX = astronautaX;
@@ -115,14 +119,102 @@ void RoboDeResgate ::calcularDistancias(int x, int y)
                 novoY >= 0 && novoY < estacao.getColunas() &&
                 posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
             {
-                cout << "Verificando posição (" << novoX << ", " << novoY << ") => "
-                     << "podeAcessar: " << estacao.getMatriz()[novoX][novoY].podeAcessar() << endl;
+
                 visitados[novoX][novoY] = true;
                 distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
                 fila.push({novoX, novoY});
             }
         }
     }
+}
+void RoboDeResgate::dfs(int x, int y)
+{
+    stack<pair<int, int>> pilha;
+    pilha.push({x, y});
+    visitados[x][y] = true;
+
+    // Direções: cima, baixo, esquerda, direita
+    int dx[] = {-1, 1, 0, 0};
+    int dy[] = {0, 0, -1, 1};
+
+    while (!pilha.empty())
+    {
+        int atualX = pilha.top().first;
+        int atualY = pilha.top().second;
+        pilha.pop();
+
+        // Verificar se encontrou um astronauta
+        if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
+        {
+            cout << "Astronauta encontrado na posição (" << atualX << ", " << atualY << ")" << endl;
+            resgatarAstronauta(atualX, atualY);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            int novoX = atualX + dx[i];
+            int novoY = atualY + dy[i];
+
+            if (posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
+            {
+                visitados[novoX][novoY] = true;
+                pilha.push({novoX, novoY});
+                passos++;
+            }
+        }
+    }
+    // Voltar para o módulo inicial
+    calcularDistancias(x, y);
+    if (distancia[posicaoInicialX][posicaoInicialY] != -1)
+    {
+        passos += distancia[posicaoInicialX][posicaoInicialY];
+        cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
+    }
+
+    // Gerar relatório
+    gerarRelatorio();
+}
+
+void RoboDeResgate::bfs(int x, int y)
+{
+    queue<pair<int, int>> fila;
+    fila.push({x, y});
+    visitados[x][y] = true;
+    distancia[x][y] = 0;
+
+    int dx[] = {-1, 1, 0, 0};
+    int dy[] = {0, 0, -1, 1};
+
+    while (!fila.empty())
+    {
+        int atualX = fila.front().first;
+        int atualY = fila.front().second;
+        fila.pop();
+
+            if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
+        {
+            cout << "Astronauta encontrado na posição (" << atualX << ", " << atualY << ")" << endl;
+            resgatarAstronauta(atualX, atualY);
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            int novoX = atualX + dx[i];
+            int novoY = atualY + dy[i];
+
+            if (posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
+            {
+                fila.push({novoX, novoY});
+                visitados[novoX][novoY] = true;
+                distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
+            }
+        }
+    }
+
+    calcularDistancias(x, y);
+    passos += distancia[posicaoInicialX][posicaoInicialY];
+    cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
+    gerarRelatorio();
 }
 
 bool RoboDeResgate ::proximoAoFogo(int x, int y)
@@ -170,7 +262,7 @@ void RoboDeResgate ::resgatarAstronauta(int x, int y)
 void RoboDeResgate ::gerarRelatorio()
 {
     cout << "Astronautas resgatados: " << resgatados.size() << endl;
-    cout << "Astronautas nao resgatados: " << estacao.getAstronautas().size() << endl;
+    cout << "Astronautas nao resgatados: " << naoResgatados.size() << endl;
     cout << "Passos dados: " << passos << endl;
 }
 

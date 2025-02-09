@@ -26,4 +26,6 @@ public:
     void gerarRelatorio();
     bool posicaoValida(int x, int y);
     void imprimirEstacao();
+    void dfs(int x, int y);
+    void bfs(int x, int y);
 };

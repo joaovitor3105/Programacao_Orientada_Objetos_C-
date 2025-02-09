@@ -32,29 +32,26 @@ void EstacaoEspacial::adicionarModulo(int x, int y, char tipo)
     {
         cout << "Modulo fora dos limites da estacao espacial" << endl;
     }
-    else if (tipo == '.')
+    switch (tipo)
     {
-        this->matriz[x][y] = ModuloNormal(tipo);
-    }
-    else if (tipo == '#')
-    {
-        this->matriz[x][y] = ModuloObstaculo(tipo);
-    }
-    else if (tipo == '~')
-    {
-        this->matriz[x][y] = ModuloVazio(tipo);
-    }
-    else if (tipo == 'S')
-    {
-        this->matriz[x][y] = ModuloSeguranca(tipo);
-    }
-    else if (tipo == 'F')
-    {
-        this->matriz[x][y] = ModuloComFogo(tipo);
-    }
-    else if (tipo == 'A')
-    {
-        this->matriz[x][y] = ModuloComAstronauta(tipo);
+    case '.':
+        matriz[x][y] = ModuloNormal(tipo);
+        break;
+    case '#':
+        matriz[x][y] = ModuloObstaculo(tipo);
+        break;
+    case '~':
+        matriz[x][y] = ModuloVazio(tipo);
+        break;
+    case 'S':
+        matriz[x][y] = ModuloSeguranca(tipo);
+        break;
+    case 'F':
+        matriz[x][y] = ModuloComFogo(tipo);
+        break;
+    case 'A':
+        matriz[x][y] = ModuloComAstronauta(tipo);
+        break;
     }
 }
 void EstacaoEspacial::adicionarAstronauta(Astronauta astronauta)

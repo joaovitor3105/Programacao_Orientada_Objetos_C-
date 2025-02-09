@@ -102,17 +102,9 @@ int main()
 {
 
     EstacaoEspacial estacao = lerArquivo();
-    estacao.imprimirEstacao();
-    // RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
+    RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
     // robo.iniciarResgate();
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            cout << estacao.getMatriz()[i][j].podeAcessar() << " ";
-        }
-        cout << endl;
-    }
-
+    robo.dfs(0, 0);
+    robo.bfs(0, 0);
     return 0;
 };

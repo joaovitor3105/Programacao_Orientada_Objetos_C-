@@ -22,14 +22,15 @@ private:
 public:
     ~EstacaoEspacial();
     EstacaoEspacial() = default;
-    EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz);
+    EstacaoEspacial(int linhas, int colunas, std::vector<std::vector<char>> matriz);
     void adicionarModulo(int x, int y, char tipo);
     void adicionarAstronauta(Astronauta astronauta);
-    vector<vector<Modulo>> &getMatriz();
-    vector<Astronauta> &getAstronautas();
+    std::vector<std::vector<Modulo>> &getMatriz();
+    std::vector<Astronauta> &getAstronautas();
     int getColunas();
     int getLinhas();
     void imprimirEstacao();
     Modulo getModulo(int x, int y);
 };
+;
 ;
