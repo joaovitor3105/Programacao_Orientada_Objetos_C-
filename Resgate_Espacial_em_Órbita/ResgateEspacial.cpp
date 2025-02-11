@@ -15,14 +15,14 @@
 #include "ModuloComAstronauta.hpp"
 using namespace std;
 
-EstacaoEspacial lerArquivo()
+EstacaoEspacial lerArquivo(string nomeArquivo)
 {
     ifstream arquivo;
-    arquivo.open("entrada2.txt");
+    arquivo.open(nomeArquivo);
 
     if (!arquivo.is_open())
     {
-        cout << "Erro ao abrir o arquivo" << endl;
+        cout << "Erro ao abrir o arquivo:" << nomeArquivo << endl;
         return EstacaoEspacial(0, 0, vector<vector<char>>());
     }
     // lendo dimensoes da matriz
@@ -100,11 +100,21 @@ EstacaoEspacial lerArquivo()
 
 int main()
 {
+    string nomeAquivo;
 
-    EstacaoEspacial estacao = lerArquivo();
-    estacao.imprimirEstacao();
-    RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
-    // robo.iniciarResgate();
-    robo.iniciarResgate(0, 0);
+    EstacaoEspacial estacao;
+    for (int i = 0; i <= 10; i++)
+    {
+        nomeAquivo = "entrada" + to_string(i) + ".txt";
+        estacao = lerArquivo(nomeAquivo);
+        if (estacao.getLinhas() != 0 && estacao.getColunas() != 0)
+        {
+            estacao.imprimirEstacao();
+            RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
+            robo.iniciarResgate(0, 0);
+        }
+        cout << "-----------------------------------" << endl;
+    }
+
     return 0;
 };

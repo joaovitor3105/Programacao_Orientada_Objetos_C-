@@ -7,7 +7,7 @@
 #include "ModuloComFogo.hpp"
 #include "ModuloComAstronauta.hpp"
 
-EstacaoEspacial::EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriz)
+EstacaoEspacial::EstacaoEspacial(int linhas, int colunas, vector<vector<char>> matriztemp)
 {
     this->linhas = linhas;
     this->colunas = colunas;
@@ -16,15 +16,10 @@ EstacaoEspacial::EstacaoEspacial(int linhas, int colunas, vector<vector<char>> m
     {
         for (int j = 0; j < colunas; j++)
         {
-            adicionarModulo(i, j, matriz[i][j]);
+            adicionarModulo(i, j, matriztemp[i][j]);
         }
     }
 }
-/*{
-    this->linhas = linhas;
-    this->colunas = colunas;
-    this->matriz = vector<vector<Modulo>>(linhas, vector<Modulo>(colunas));
-}*/
 
 void EstacaoEspacial::adicionarModulo(int x, int y, char tipo)
 {
@@ -81,8 +76,6 @@ int EstacaoEspacial::getLinhas()
 
 EstacaoEspacial::~EstacaoEspacial()
 {
-    matriz.clear();
-    cout << "Destrutor da EstacaoEspacial chamado!" << endl;
 }
 
 Modulo EstacaoEspacial::getModulo(int x, int y)
