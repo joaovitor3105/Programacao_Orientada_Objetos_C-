@@ -97,6 +97,11 @@ EstacaoEspacial lerArquivo(string nomeArquivo)
 
                 break;
             }
+            else
+            {
+                cout << "Erro (Má Formatação da matriz): O astronauta " << nome << " não foi encontrado." << endl;
+                return EstacaoEspacial(0, 0, vector<vector<char>>());
+            }
         }
     }
     arquivo.close();
