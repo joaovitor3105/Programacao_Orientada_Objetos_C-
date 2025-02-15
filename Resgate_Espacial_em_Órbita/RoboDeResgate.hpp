@@ -16,12 +16,12 @@ private:
     std::vector<std::vector<int>> distancia;
 
 public:
-    RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao);
+    RoboDeResgate(EstacaoEspacial &estacao);
     ~RoboDeResgate();
-    void iniciarResgate(int x, int y);
+    void iniciarResgate();
     bool proximoAoFogo(int x, int y);
     void resgatarAstronauta(int x, int y);
-    void gerarRelatorio();
+    string gerarRelatorio();
     bool posicaoValida(int x, int y);
     void imprimirEstacao(int x, int y);
 };

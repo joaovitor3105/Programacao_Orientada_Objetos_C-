@@ -1,91 +1,199 @@
 #include "RoboDeResgate.hpp"
+#include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <sstream>
+#include "Modulo.hpp"
+#include "Astronauta.hpp"
+#include "EstacaoEspacial.hpp"
+#include "RoboDeResgate.hpp"
 #include "ModuloNormal.hpp"
+#include "ModuloObstaculo.hpp"
+#include "ModuloVazio.hpp"
+#include "ModuloSeguranca.hpp"
+#include "ModuloComFogo.hpp"
+#include "ModuloComAstronauta.hpp"
 #include <queue>
 #include <iostream>
 #include <stack>
 #include <climits>
+#include <algorithm>
 
-RoboDeResgate ::RoboDeResgate(int posicaoInicialX, int posicaoInicialY, EstacaoEspacial &estacao) : posicaoInicialX(posicaoInicialX), posicaoInicialY(posicaoInicialY), estacao(estacao)
+RoboDeResgate ::RoboDeResgate(EstacaoEspacial &estacao) : estacao(estacao)
 {
     this->passos = 0;
     resgatados = std::vector<Astronauta>();
     naoResgatados = estacao.getAstronautas();
     visitados = std::vector<std::vector<bool>>(estacao.getLinhas(), std::vector<bool>(estacao.getColunas(), false));
     distancia = std::vector<std::vector<int>>(estacao.getLinhas(), std::vector<int>(estacao.getColunas(), -1));
+    for (int i = 0; i < estacao.getLinhas(); i++)
+    {
+        for (int j = 0; j < estacao.getColunas(); j++)
+        {
+            if (estacao.getMatriz()[i][j].getTipo() == 'S')
+            {
+                this->posicaoInicialX = i;
+                this->posicaoInicialY = j;
+            }
+        }
+    }
 }
 
-void RoboDeResgate ::iniciarResgate(int x, int y)
+void RoboDeResgate::iniciarResgate()
 {
-    queue<pair<int, int>> fila;
-    fila.push({x, y});
-    visitados[x][y] = true;
+    this->passos = 0;
+    pair<int, int> posicaoAtual = {posicaoInicialX, posicaoInicialY};
 
-    // Inicializa distância corretamente
-    for (int i = 0; i < estacao.getLinhas(); i++)
-        for (int j = 0; j < estacao.getColunas(); j++)
-            distancia[i][j] = INT_MAX;
-
-    distancia[x][y] = 0;
-
-    int dx[] = {-1, 1, 0, 0};
-    int dy[] = {0, 0, -1, 1};
-
-    while (!fila.empty())
+    while (!naoResgatados.empty())
     {
-        int atualX = fila.front().first;
-        int atualY = fila.front().second;
-        fila.pop();
-        passos++;
+        queue<pair<int, int>> fila;
+        vector<vector<bool>> visitados(estacao.getLinhas(), vector<bool>(estacao.getColunas(), false));
+        vector<vector<pair<int, int>>> pai(estacao.getLinhas(), vector<pair<int, int>>(estacao.getColunas(), {-1, -1}));
 
-        // Se encontrou um astronauta, resgata ele
-        if (estacao.getMatriz()[atualX][atualY].getTipo() == 'A')
+        fila.push(posicaoAtual);
+        visitados[posicaoAtual.first][posicaoAtual.second] = true;
+
+        bool encontrouAstronauta = false;
+        pair<int, int> astronautaPos;
+
+        while (!fila.empty() && !encontrouAstronauta)
         {
-            cout << "Astronauta encontrado na posição (" << atualX << ", " << atualY << ")" << endl;
-            resgatarAstronauta(atualX, atualY);
+            int x = fila.front().first;
+            int y = fila.front().second;
+            fila.pop();
+
+            if (estacao.getMatriz()[x][y].getTipo() == 'A')
+            {
+                encontrouAstronauta = true;
+                astronautaPos = {x, y};
+                continue;
+            }
+
+            const int dx[] = {-1, 1, 0, 0};
+            const int dy[] = {0, 0, -1, 1};
+
+            for (int i = 0; i < 4; i++)
+            {
+                int novoX = x + dx[i];
+                int novoY = y + dy[i];
+
+                if (novoX >= 0 && novoX < estacao.getLinhas() &&
+                    novoY >= 0 && novoY < estacao.getColunas() &&
+                    !visitados[novoX][novoY] &&
+                    posicaoValida(novoX, novoY))
+                {
+                    visitados[novoX][novoY] = true;
+                    pai[novoX][novoY] = {x, y};
+                    fila.push({novoX, novoY});
+                }
+            }
         }
 
-        // Explora as 4 direções possíveis
-        for (int i = 0; i < 4; i++)
+        // RESGATE DO ASTRONAUTA
+        if (encontrouAstronauta)
         {
-            int novoX = atualX + dx[i];
-            int novoY = atualY + dy[i];
+            cout << "Astronauta encontrado na posição (" << astronautaPos.first << ", " << astronautaPos.second << ")" << endl;
 
-            if (posicaoValida(novoX, novoY) && !visitados[novoX][novoY])
+            vector<pair<int, int>> caminho;
+            auto atual = astronautaPos;
+
+            while (atual.first != -1 && atual != posicaoAtual)
             {
-                fila.push({novoX, novoY});
-                visitados[novoX][novoY] = true;
-                distancia[novoX][novoY] = distancia[atualX][atualY] + 1;
-                cout << "Explorando a posição (" << novoX << ", " << novoY << ")" << endl;
+                caminho.push_back(atual);
+                atual = pai[atual.first][atual.second];
+            }
+            caminho.push_back(posicaoAtual);
+            reverse(caminho.begin(), caminho.end());
+
+            cout << "Caminho até o astronauta:" << endl;
+            for (size_t i = 0; i < caminho.size(); i++)
+            {
+                cout << "(" << caminho[i].first << ", " << caminho[i].second << ")";
+                if (i < caminho.size() - 1)
+                    cout << " -> ";
+            }
+            cout << "\n"
+                 << endl;
+
+            passos += caminho.size() - 1;
+            resgatarAstronauta(astronautaPos.first, astronautaPos.second);
+            posicaoAtual = astronautaPos;
+        }
+
+        else
+        { // possivel erro
+            cout << "Não foi possível encontrar mais astronautas acessíveis." << endl;
+            break;
+        }
+    }
+
+    // retornando ao módulo seguro
+    if (posicaoAtual.first != posicaoInicialX || posicaoAtual.second != posicaoInicialY)
+    {
+        queue<pair<int, int>> fila;
+        vector<vector<bool>> visitados(estacao.getLinhas(), vector<bool>(estacao.getColunas(), false));
+        vector<vector<pair<int, int>>> pai(estacao.getLinhas(), vector<pair<int, int>>(estacao.getColunas(), {-1, -1}));
+
+        fila.push(posicaoAtual);
+        visitados[posicaoAtual.first][posicaoAtual.second] = true;
+        bool encontrouModulo = false;
+
+        while (!fila.empty() && !encontrouModulo)
+        {
+            int x = fila.front().first;
+            int y = fila.front().second;
+            fila.pop();
+
+            if (x == posicaoInicialX && y == posicaoInicialY)
+            {
+                vector<pair<int, int>> caminho;
+                auto atual = make_pair(x, y);
+
+                while (atual.first != -1 && atual != posicaoAtual)
+                {
+                    caminho.push_back(atual);
+                    atual = pai[atual.first][atual.second];
+                }
+                caminho.push_back(posicaoAtual);
+                reverse(caminho.begin(), caminho.end());
+
+                cout << "Caminho de volta ao módulo seguro:" << endl;
+                for (size_t i = 0; i < caminho.size(); i++)
+                {
+                    cout << "(" << caminho[i].first << ", " << caminho[i].second << ")";
+                    if (i < caminho.size() - 1)
+                        cout << " -> ";
+                }
+                cout << "\n"
+                     << endl;
+
+                passos += caminho.size() - 1;
+                encontrouModulo = true;
+                break;
+            }
+
+            const int dx[] = {-1, 1, 0, 0};
+            const int dy[] = {0, 0, -1, 1};
+
+            for (int i = 0; i < 4; i++)
+            {
+                int novoX = x + dx[i];
+                int novoY = y + dy[i];
+
+                if (novoX >= 0 && novoX < estacao.getLinhas() &&
+                    novoY >= 0 && novoY < estacao.getColunas() &&
+                    !visitados[novoX][novoY] &&
+                    posicaoValida(novoX, novoY))
+                {
+                    visitados[novoX][novoY] = true;
+                    pai[novoX][novoY] = {x, y};
+                    fila.push({novoX, novoY});
+                }
             }
         }
     }
-    cout << "Retornando ao módulo inicial. Passos totais: " << passos << endl;
 
-    if (distancia[posicaoInicialX][posicaoInicialY] != INT_MAX)
-        passos += distancia[posicaoInicialX][posicaoInicialY];
-
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            if (distancia[i][j] == INT_MAX)
-            {
-                cout << "I ";
-            }
-            else
-                cout << distancia[i][j] << " ";
-        }
-        cout << endl;
-    }
-
-    for (int i = 0; i < estacao.getLinhas(); i++)
-    {
-        for (int j = 0; j < estacao.getColunas(); j++)
-        {
-            cout << visitados[i][j] << " ";
-        }
-        cout << endl;
-    }
     gerarRelatorio();
 }
 
@@ -131,20 +239,40 @@ void RoboDeResgate ::resgatarAstronauta(int x, int y)
     }
 }
 
-void RoboDeResgate ::gerarRelatorio()
+string RoboDeResgate ::gerarRelatorio()
 {
-
+    string relatorio = "Relatório de Resgate:\n\n";
+    relatorio += "Astronautas resgatados: " + std::to_string(resgatados.size()) + "\n\n";
     for (const auto &astronauta : resgatados)
     {
-        cout << "Resgatado: " << astronauta.getNome() << " na posição (" << astronauta.getX() << ", " << astronauta.getY() << ")" << endl;
+        relatorio += "-" + astronauta.getNome() + " na posição (" + std::to_string(astronauta.getX()) + ", " + std::to_string(astronauta.getY()) + ")";
+        relatorio += " Nivel de saude: " + std::to_string(astronauta.getNivelSaude());
+        if (astronauta.getAtendimentoUrgente())
+        {
+            relatorio += " Atendimento urgente: sim\n";
+        }
+        else
+        {
+            relatorio += " Atendimento urgente: não\n";
+        }
     }
 
-    cout << "Astronautas nao resgatados: " << naoResgatados.size() << endl;
+    relatorio += "\nAstronautas não resgatados: " + std::to_string(naoResgatados.size()) + "\n\n";
     for (const auto &astronauta : naoResgatados)
     {
-        cout << "Nao resgatado: " << astronauta.getNome() << " na posição (" << astronauta.getX() << ", " << astronauta.getY() << ")" << endl;
+        relatorio += "-" + astronauta.getNome() + " na posição (" + std::to_string(astronauta.getX()) + ", " + std::to_string(astronauta.getY()) + ")";
+        relatorio += " Nivel de saúde: " + std::to_string(astronauta.getNivelSaude());
+        if (astronauta.getAtendimentoUrgente())
+        {
+            relatorio += " Atendimento urgente: sim\n";
+        }
+        else
+        {
+            relatorio += " Atendimento urgente: não\n";
+        }
     }
-    cout << "Passos dados: " << passos << endl;
+    relatorio += "Tempo total de operação de resgate: " + std::to_string(passos) + "\n";
+    return relatorio;
 }
 
 bool RoboDeResgate ::posicaoValida(int x, int y)

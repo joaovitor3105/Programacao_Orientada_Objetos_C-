@@ -30,17 +30,22 @@ EstacaoEspacial lerArquivo(string nomeArquivo)
     arquivo >> linha;
     arquivo >> coluna;
     vector<vector<char>> matriztemp = vector<vector<char>>(linha, vector<char>(coluna));
-
-    char tipo;
+    arquivo.ignore();
 
     // lendo matriz e definindo os modulos
-
+    string linhaMatriz;
     for (int i = 0; i < linha; i++)
     {
+        getline(arquivo, linhaMatriz);
+        if (linhaMatriz.length() != static_cast<size_t>(coluna))
+        {
+            cout << "Erro(Má Formatação da matriz): A linha " << i << " nao tem o numero correto de colunas." << endl;
+            return EstacaoEspacial(0, 0, vector<vector<char>>());
+        }
+
         for (int j = 0; j < coluna; j++)
         {
-            arquivo >> tipo;
-            matriztemp[i][j] = tipo;
+            matriztemp[i][j] = linhaMatriz[j];
         }
     }
 
@@ -103,15 +108,37 @@ int main()
     string nomeAquivo;
 
     EstacaoEspacial estacao;
-    for (int i = 0; i <= 10; i++)
+    for (int i = 1; i <= 10; i++)
     {
-        nomeAquivo = "entrada" + to_string(i) + ".txt";
+        if (i < 10)
+        {
+            nomeAquivo = "entrada0" + to_string(i) + ".txt";
+        }
+        else
+        {
+            nomeAquivo = "entrada10.txt";
+        }
+
+        cout << nomeAquivo << ":" << endl;
         estacao = lerArquivo(nomeAquivo);
         if (estacao.getLinhas() != 0 && estacao.getColunas() != 0)
         {
             estacao.imprimirEstacao();
-            RoboDeResgate robo = RoboDeResgate(0, 0, estacao);
-            robo.iniciarResgate(0, 0);
+            RoboDeResgate robo = RoboDeResgate(estacao);
+            robo.iniciarResgate();
+            string relatorio = robo.gerarRelatorio();
+            ofstream arquivoSaida;
+            string nomeSaida = "saida" + (i < 10 ? "0" + to_string(i) : to_string(i)) + ".txt";
+            arquivoSaida.open(nomeSaida);
+            if (arquivoSaida.is_open())
+            {
+                arquivoSaida << relatorio;
+                arquivoSaida.close();
+            }
+            else
+            {
+                cout << "Erro ao abrir o arquivo de saída: " << nomeSaida << endl;
+            }
         }
         cout << "-----------------------------------" << endl;
     }
