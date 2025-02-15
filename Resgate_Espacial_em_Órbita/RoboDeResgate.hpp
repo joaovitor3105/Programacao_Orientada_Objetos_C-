@@ -14,6 +14,7 @@ private:
     int passos;
     std::vector<std::vector<bool>> visitados;
     std::vector<std::vector<int>> distancia;
+    vector<vector<pair<int, int>>> pai;
 
 public:
     RoboDeResgate(EstacaoEspacial &estacao);

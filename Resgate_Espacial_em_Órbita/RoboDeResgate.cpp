@@ -26,8 +26,9 @@ RoboDeResgate ::RoboDeResgate(EstacaoEspacial &estacao) : estacao(estacao)
     resgatados = std::vector<Astronauta>();
     naoResgatados = estacao.getAstronautas();
     visitados = std::vector<std::vector<bool>>(estacao.getLinhas(), std::vector<bool>(estacao.getColunas(), false));
-    distancia = std::vector<std::vector<int>>(estacao.getLinhas(), std::vector<int>(estacao.getColunas(), -1));
-    for (int i = 0; i < estacao.getLinhas(); i++)
+    pai = std::vector<std::vector<std::pair<int, int>>>(estacao.getLinhas(), std::vector<std::pair<int, int>>(estacao.getColunas(), {-1, -1}));
+
+        for (int i = 0; i < estacao.getLinhas(); i++)
     {
         for (int j = 0; j < estacao.getColunas(); j++)
         {
@@ -48,8 +49,8 @@ void RoboDeResgate::iniciarResgate()
     while (!naoResgatados.empty())
     {
         queue<pair<int, int>> fila;
-        vector<vector<bool>> visitados(estacao.getLinhas(), vector<bool>(estacao.getColunas(), false));
-        vector<vector<pair<int, int>>> pai(estacao.getLinhas(), vector<pair<int, int>>(estacao.getColunas(), {-1, -1}));
+        visitados = std::vector<std::vector<bool>>(estacao.getLinhas(), std::vector<bool>(estacao.getColunas(), false));
+        pai = vector<vector<pair<int, int>>>(estacao.getLinhas(), vector<pair<int, int>>(estacao.getColunas(), {-1, -1}));
 
         fila.push(posicaoAtual);
         visitados[posicaoAtual.first][posicaoAtual.second] = true;
@@ -106,6 +107,7 @@ void RoboDeResgate::iniciarResgate()
             caminho.push_back(posicaoAtual);
             reverse(caminho.begin(), caminho.end());
 
+            // imprimindo o caminho
             cout << "Caminho até o astronauta:" << endl;
             for (size_t i = 0; i < caminho.size(); i++)
             {

@@ -1,13 +1,13 @@
 Relatório de Resgate:
 
-Astronautas resgatados: 4
+Astronautas resgatados: 0
 
--Buzz Aldrin na posição (5, 0) Nivel de saude: 95 Atendimento urgente: não
--Marcos Pontes na posição (8, 2) Nivel de saude: 50 Atendimento urgente: sim
--Yuri Gagarin na posição (1, 9) Nivel de saude: 85 Atendimento urgente: não
--Valentina Tereshkova na posição (3, 9) Nivel de saude: 70 Atendimento urgente: não
 
-Astronautas não resgatados: 1
+Astronautas não resgatados: 5
 
+-Yuri Gagarin na posição (1, 9) Nivel de saúde: 85 Atendimento urgente: não
 -Neil Armstrong na posição (4, 8) Nivel de saúde: 60 Atendimento urgente: sim
-Tempo total de operação de resgate: 44
+-Buzz Aldrin na posição (5, 0) Nivel de saúde: 95 Atendimento urgente: não
+-Marcos Pontes na posição (8, 2) Nivel de saúde: 50 Atendimento urgente: sim
+-Valentina Tereshkova na posição (3, 9) Nivel de saúde: 70 Atendimento urgente: não
+Tempo total de operação de resgate: 0

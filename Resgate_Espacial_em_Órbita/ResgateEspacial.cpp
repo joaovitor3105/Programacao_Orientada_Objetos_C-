@@ -39,7 +39,7 @@ EstacaoEspacial lerArquivo(string nomeArquivo)
         getline(arquivo, linhaMatriz);
         if (linhaMatriz.length() != static_cast<size_t>(coluna))
         {
-            cout << "Erro(Má Formatação da matriz): A linha " << i << " nao tem o numero correto de colunas." << endl;
+            cout << "Erro (Má Formatação da matriz): A linha " << i << " não tem o numero correto de colunas." << endl;
             return EstacaoEspacial(0, 0, vector<vector<char>>());
         }
 
@@ -123,7 +123,6 @@ int main()
         estacao = lerArquivo(nomeAquivo);
         if (estacao.getLinhas() != 0 && estacao.getColunas() != 0)
         {
-            estacao.imprimirEstacao();
             RoboDeResgate robo = RoboDeResgate(estacao);
             robo.iniciarResgate();
             string relatorio = robo.gerarRelatorio();
